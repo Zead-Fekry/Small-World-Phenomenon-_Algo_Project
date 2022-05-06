@@ -281,7 +281,7 @@ namespace project_algo1
             }
             else
             {
-               
+               //zezoozezoo
                 sehas_actors.TryGetValue(nonos.actor1, out List<string> er);
 
               var presentInBoth = list_of_actors_in_queue.Intersect(er);//tcheck en neigbhours el actor de mesh 3ande fel queue 3ashan may7slsh redudancy
