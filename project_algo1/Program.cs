@@ -10,11 +10,11 @@ namespace project_algo1
 {
     internal class Program
     {
-        private static readonly string MOVIES_LIST = "Movies4736.txt";
-        private static readonly string QUERIES_LIST = "queries2000.txt";
-
+        private static readonly string MOVIES_LIST = "Movies122806.txt";
+        private static readonly string QUERIES_LIST = "queries22.txt";
+        static Dictionary<string, Actor> Optimization = new Dictionary<string, Actor>();   
         public static string MOVIES_LIST1 => MOVIES_LIST;
-
+        //sh
         static void Main(string[] args)
         {
             List<WeightedEdge> edges = new List<WeightedEdge>();
@@ -41,7 +41,6 @@ namespace project_algo1
             Actor start;
             Actor end;
             Console.WriteLine("Read Movies Start");
-            //movies read
             while (true)
             {
                 nodes.Clear();
@@ -52,19 +51,27 @@ namespace project_algo1
                 string[] lineItems = reader.Split('/');
                 for (int j = 1; j < lineItems.Length; j++)
                 {
-                    Actor actor = actors.FirstOrDefault(ac => ac.Name.Equals(lineItems[j]));
-                    if (actor == null)
+                    if (Optimization.ContainsKey(lineItems[j]) == false)
                     {
-                        actor = new Actor(lineItems[j]);
-                        actors.Add(actor);
+                        Actor actor2 = new Actor(lineItems[j]);
+                        Optimization.Add(lineItems[j], actor2);
+                        actors.Add(actor2);
                     }
-                    actor.Movies.Add(lineItems[0]);
+                    Actor zoz = Optimization[lineItems[j]];
+                    zoz.Movies.Add(lineItems[0]);
+                    /*  Actor actor = actors.FirstOrDefault(ac => ac.Name.Equals(lineItems[j]));
+                      if (actor == null)
+                      {
+                          actor = new Actor(lineItems[j]);
+                          actors.Add(actor);
+                      }*/
+                    //zoz.Movies.Add(lineItems[0]);
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         start = nodes[i];
-                        end = actor;
-                        WeightedEdge edgeR = nodes[i].Edges.FirstOrDefault(ed => ed.End.Equals(end));
-                        WeightedEdge edgeL = actor.Edges.FirstOrDefault(ed => ed.End.Equals(start));
+                        end = zoz;
+                        WeightedEdge edgeR = start.Edges.FirstOrDefault(ed => ed.End.Equals(end));
+                        WeightedEdge edgeL = end.Edges.FirstOrDefault(ed => ed.End.Equals(start));
                         if (edgeR != null)
                         {
                             edgeR.IncrementWeight();
@@ -76,7 +83,7 @@ namespace project_algo1
                             edges.Add(new WeightedEdge(end, start, 1));
                         }
                     }
-                    nodes.Add(actor);
+                    nodes.Add(zoz);
                 }
 
 
@@ -100,7 +107,7 @@ namespace project_algo1
                 start = actors.FirstOrDefault(ac => ac.Name.Equals(lineItems[0]));
                 end = actors.FirstOrDefault(ac => ac.Name.Equals(lineItems[1]));
                 Console.WriteLine("Solving "+ start.Name + end.Name+"...");
-                List<List<string>> solution = weightedGraph.Pathfinder(start, end, "Dijkstra");
+                List<List<string>> solution = weightedGraph.DijkstraSearch(start, end);
                 Console.WriteLine(start.Name +" "+ end.Name + " Solution is =");
                 for (int j = 0; j < solution.Count; j++)
                 {

@@ -28,39 +28,21 @@ namespace project_algo1
         /// <summary>
         /// Pathfinding algorithms available: Dijkstra and AStar
         /// </summary>
-        public List<List<string>> Pathfinder(Actor start, Actor end, string algorithm)
-        {
-            Func<Actor, Actor, List<List<string>>> pathfinder;
-
-            if (algorithm == "Dijkstra")
-            {
-                pathfinder = DijkstraSearch;
-            }
-            else if (algorithm == "AStar")
-            {
-                pathfinder = AStarSearch;
-            }
-            else
-            {
-                throw new ArgumentException("Pathfinding algorithm not available.");
-            }
-            return pathfinder(start, end);
-        }
-
+        
 
         public List<List<string>> DijkstraSearch(Actor start, Actor end)
         {
-            Queue<Actor> priorityQueue = new Queue<Actor>();
+            Queue<Actor> Queue = new Queue<Actor>();
 
             Initialize();
             start.DegreeOfSepration = 0;
-            priorityQueue.Enqueue(start);
+            Queue.Enqueue(start);
 
             Actor current;
             int DOS = int.MaxValue;
-            while (priorityQueue.Count > 0)
+            while (Queue.Count > 0)
             {
-                current = priorityQueue.Dequeue();
+                current = Queue.Dequeue();
 
                 if (!current.IsVisited && current.DegreeOfSepration <= DOS)
                 {
@@ -91,7 +73,7 @@ namespace project_algo1
                             neighbor.Strength = newStrength;
                             neighbor.DegreeOfSepration = current.DegreeOfSepration+1;
                             neighbor.ReplacePrev(current);
-                            priorityQueue.Enqueue(neighbor);
+                            Queue.Enqueue(neighbor);
                         }
                     }
                 }
@@ -101,57 +83,7 @@ namespace project_algo1
             return movies;
         }
 
-        public List<List<string>> AStarSearch(Actor start, Actor end)
-        {
-            Dictionary<Actor, Actor> parentMap = new Dictionary<Actor, Actor>();
-            Queue<Actor> priorityQueue = new Queue<Actor>();
-
-            Initialize();
-            priorityQueue.Enqueue(start);
-
-            Actor current;
-
-            while (priorityQueue.Count > 0)
-            {
-                current = priorityQueue.Dequeue();
-
-                if (!current.IsVisited)
-                {
-                    current.IsVisited = true;
-
-                    if (current.Equals(end))
-                    {
-                        break;
-                    }
-
-                    foreach (WeightedEdge edge in current.Edges)
-                    {
-                        Actor neighbor = edge.End;
-
-                        int newCost = current.Strength + edge.Weight;
-                        int neighborCost = neighbor.Strength;
-
-                        if (newCost < neighborCost)
-                        {
-                            neighbor.Strength = newCost;
-                            parentMap.Add(neighbor, current);
-                            //double priority = newCost + Heuristic(neighbor, end);
-                            priorityQueue.Enqueue(neighbor);
-                        }
-                    }
-                }
-            }
-            List<List<Actor>> path = ReconstructPath( start, end);
-            List<List<string>> movies = ReconstructPathMovies(start, end);
-            return movies;
-            //return path;
-        }
-
-        //public double Heuristic(Actor vertexA, Actor vertexB)
-        //{
-        //    return vertexA.Location.DistanceTo(vertexB.Location);
-        //}
-
+        
         public void Initialize()
         {
             foreach (Actor vertex in vertices)
