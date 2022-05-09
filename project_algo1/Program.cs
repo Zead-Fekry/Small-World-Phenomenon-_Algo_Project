@@ -10,32 +10,37 @@ namespace project_algo1
 {
     internal class Program
     {
-        private static readonly string MOVIES_LIST = "Movies122806.txt";
-        private static readonly string QUERIES_LIST = "queries22.txt";
-        static Dictionary<string, Actor> Optimization = new Dictionary<string, Actor>();   
+        //zezo
+        // private static readonly string MOVIES_LIST = "movies1.txt";         //sample
+        // private static readonly string QUERIES_LIST = "queries1.txt";       // sample
+        // private static readonly string MOVIES_LIST = "Movies193.txt";     // small case1
+        // private static readonly string QUERIES_LIST = "queries110.txt";   // small case1
+        // private static readonly string MOVIES_LIST = "Movies187.txt";     // small case2
+        // private static readonly string QUERIES_LIST = "queries50.txt";    // small case2
+        // private static readonly string MOVIES_LIST = "Movies967.txt";     // medium case 1  
+        // private static readonly string QUERIES_LIST = "queries85.txt";    // medium case1
+        // private static readonly string MOVIES_LIST = "Movies967.txt";     // medium case1
+        // private static readonly string QUERIES_LIST = "queries4000.txt";  // medium case1
+        // private static readonly string MOVIES_LIST = "Movies4736.txt";    //medium case 2
+        // private static readonly string QUERIES_LIST = "queries110.txt";   // medium case 2
+        // private static readonly string MOVIES_LIST = "Movies4736.txt";    //medium case 2
+        // private static readonly string QUERIES_LIST = "queries2000.txt";  // medium case 2
+        // private static readonly string MOVIES_LIST = "Movies14129.txt";   //large
+        //  private static readonly string QUERIES_LIST = "queries26.txt";    // large
+         private static readonly string MOVIES_LIST = "Movies122806.txt";  //Extreme
+         private static readonly string QUERIES_LIST = "queries200.txt";   // Extreme
+
         public static string MOVIES_LIST1 => MOVIES_LIST;
-        //sh
+
         static void Main(string[] args)
         {
+            Dictionary<string, Actor> Optimization = new Dictionary<string, Actor>();
             List<WeightedEdge> edges = new List<WeightedEdge>();
             List<Actor> actors = new List<Actor>();
             StreamReader movieReader = new StreamReader(MOVIES_LIST1);
             Console.SetIn(movieReader);
             List<Actor> nodes = new List<Actor>();
-            //sample test         queries1.txt  ,        movies1.txt
-            //
-            //small test 1  "queries110.txt"    ,     Movies193.txt
-            //
-            //small test 2  "queries50.txt"    ,     Movies187.txt
-            //
-            //medium test 1  "queries4000.txt"    ,     Movies967.txt   
-            //medium test 1  "queries85.txt"    ,     Movies967.txt   
-
-            //medium test 2  "queries110.txt"    ,     Movies4736.txt   
-            //medium test 2  "queries2000.txt"    ,     Movies4736.txt   
-
-            //queries22
-            //Movies122806
+            var spin = new ConsoleSpinner();
 
             string reader;
             Actor start;
@@ -43,6 +48,7 @@ namespace project_algo1
             Console.WriteLine("Read Movies Start");
             while (true)
             {
+                spin.Turn();
                 nodes.Clear();
                 reader = Console.ReadLine();
                 if (string.IsNullOrEmpty(reader))
@@ -59,13 +65,7 @@ namespace project_algo1
                     }
                     Actor zoz = Optimization[lineItems[j]];
                     zoz.Movies.Add(lineItems[0]);
-                    /*  Actor actor = actors.FirstOrDefault(ac => ac.Name.Equals(lineItems[j]));
-                      if (actor == null)
-                      {
-                          actor = new Actor(lineItems[j]);
-                          actors.Add(actor);
-                      }*/
-                    //zoz.Movies.Add(lineItems[0]);
+
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         start = nodes[i];
@@ -89,7 +89,11 @@ namespace project_algo1
 
             }//movies end 
             Console.WriteLine("Read Movies Done");
+            Console.WriteLine("do you want to start algorithm ? ");
+            Console.ReadKey();
+            Console.Clear();
             edges = null;
+            Optimization = null;
             GC.Collect();
 
 
@@ -106,25 +110,29 @@ namespace project_algo1
                 string[] lineItems = reader.Split('/');
                 start = actors.FirstOrDefault(ac => ac.Name.Equals(lineItems[0]));
                 end = actors.FirstOrDefault(ac => ac.Name.Equals(lineItems[1]));
-                Console.WriteLine("Solving "+ start.Name + end.Name+"...");
                 List<List<string>> solution = weightedGraph.DijkstraSearch(start, end);
-                Console.WriteLine(start.Name +" "+ end.Name + " Solution is =");
+                Console.WriteLine("Solving: => " + start.Name +" <=> " + end.Name + "...");
+                Console.Write(" DOS = " + end.DegreeOfSepration);
+                Console.Write(" , Strength = " + end.Strength);
+                Console.WriteLine();
+                Console.WriteLine("ChainOfMovies: ");
                 for (int j = 0; j < solution.Count; j++)
                 {
                     List<string> actor = solution[j];
                     for (int i = 0; i < actor.Count; i++)
                     {
                         if (i == actor.Count - 1)
+
                             Console.Write(actor[i]);
                         else Console.Write(actor[i] + " or ");
                     }
                     if (j != solution.Count - 1)
                         Console.Write(" => ");
+
                 }
-                Console.Write("\tDOS = " + end.DegreeOfSepration);
-                Console.Write("\tStrength = " + end.Strength);
                 Console.WriteLine();
-                Console.WriteLine("---------------------------------------------");
+
+                Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------------");
 
             }
             //Queries Read End
